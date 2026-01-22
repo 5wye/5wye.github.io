@@ -1,424 +1,314 @@
-import React, { useState } from 'react';
-import { Zap, Trash2, HardDrive, Cpu, AlertTriangle, CheckCircle, XCircle, Monitor } from 'lucide-react';
-
-export default function LowEndGamingTweaks() {
-  const [activeTab, setActiveTab] = useState('essential');
-  const [appliedTweaks, setAppliedTweaks] = useState({});
-  const [selectedSpec, setSelectedSpec] = useState('potato');
-
-  const toggleTweak = (id) => {
-    setAppliedTweaks(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
-  };
-
-  const specProfiles = {
-    potato: {
-      name: '🥔 Potato Tier',
-      desc: '2-4GB RAM, Old Dual-Core, HDD, Intel HD/Old iGPU',
-      examples: 'Pentium, Celeron, old i3, 2GB-4GB RAM',
-      color: 'red'
-    },
-    lowend: {
-      name: '🔥 Low-End',
-      desc: '4-8GB RAM, Quad-Core, HDD/SSD, Basic GPU',
-      examples: 'i3 8th-10th gen, Ryzen 3, MX150/MX250, 4-8GB RAM',
-      color: 'orange'
-    },
-    budget: {
-      name: '⚡ Budget Gaming',
-      desc: '8GB RAM, Modern CPU, SSD, Entry GPU',
-      examples: 'i5 10th gen+, Ryzen 5, GTX 1650/RX 5500, 8GB RAM',
-      color: 'yellow'
-    }
-  };
-
-  const tweakCategories = {
-    essential: {
-      title: 'Essential (Start Here)',
-      icon: Zap,
-      color: 'red',
-      tweaks: [
-        {
-          id: 'close_everything',
-          title: 'Close ALL Background Apps',
-          description: 'Every running app steals RAM and CPU cycles',
-          steps: ['Open Task Manager (Ctrl+Shift+Esc)', 'Go to Processes tab', 'End ALL unnecessary processes (Chrome, Discord, Spotify, etc)', 'Keep only Windows Explorer and your game'],
-          impact: { potato: 'CRITICAL', lowend: 'HIGH', budget: 'MEDIUM' },
-          priority: 1
-        },
-        {
-          id: 'performance_mode',
-          title: 'High/Ultimate Performance Power Plan',
-          description: 'Prevents CPU from throttling down to save power',
-          steps: ['Control Panel > Power Options', 'Select "High Performance"', 'For Ultimate: CMD as Admin > powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61', 'Then select "Ultimate Performance" in Power Options'],
-          impact: { potato: 'HUGE', lowend: 'HIGH', budget: 'MEDIUM' },
-          priority: 1
-        },
-        {
-          id: 'page_file',
-          title: 'Configure Virtual Memory/Page File',
-          description: 'Uses storage as extra RAM when physical RAM fills up',
-          steps: ['System Properties > Advanced > Performance Settings > Advanced', 'Virtual Memory > Change', 'Uncheck "Automatically manage"', 'Custom size: Initial = 1.5x your RAM, Max = 3x your RAM', '(2GB RAM = 3000-6000MB, 4GB = 6000-12000MB, 8GB = 12000-24000MB)'],
-          impact: { potato: 'CRITICAL', lowend: 'HIGH', budget: 'LOW' },
-          priority: 1
-        },
-        {
-          id: 'disable_updates',
-          title: 'Pause/Control Windows Updates',
-          description: 'Updates cause random lag spikes and disk usage',
-          steps: ['Settings > Update & Security > Pause updates for 35 days', 'Or Services.msc > Windows Update > Disable', 'Or use "O&O ShutUp10" to control updates'],
-          impact: { potato: 'HUGE', lowend: 'HIGH', budget: 'MEDIUM' },
-          priority: 1
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Low-End PC Gaming Tweaks</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #030712, #111827, #000000);
+            min-height: 100vh;
         }
-      ]
-    },
-    ram: {
-      title: 'RAM Optimization',
-      icon: Cpu,
-      color: 'orange',
-      tweaks: [
-        {
-          id: 'disable_startup',
-          title: 'Disable Startup Programs',
-          description: 'Programs at startup eat RAM before you even start gaming',
-          steps: ['Task Manager > Startup tab', 'Right-click and Disable ALL non-essential programs', 'Disable: Steam (launch manually), Discord, Spotify, Adobe, Microsoft apps', 'Keep only: Antivirus and GPU drivers'],
-          impact: { potato: 'HUGE', lowend: 'HIGH', budget: 'MEDIUM' },
-          priority: 1
-        },
-        {
-          id: 'services_disable',
-          title: 'Disable Unnecessary Services',
-          description: 'Background services waste RAM and CPU',
-          steps: ['Win + R > services.msc', 'Set to Disabled: Windows Search, Superfetch/SysMain, Print Spooler (if no printer)', 'Also disable: Connected User Experiences, Diagnostic services, Xbox services'],
-          impact: { potato: 'HIGH', lowend: 'MEDIUM', budget: 'LOW' },
-          priority: 2
-        },
-        {
-          id: 'visual_off',
-          title: 'Disable Visual Effects',
-          description: 'Animations and transparency use RAM and CPU',
-          steps: ['System Properties > Advanced > Performance Settings', 'Select "Adjust for best performance"', 'OR keep only: Show thumbnails, Smooth edges of screen fonts', 'Apply and OK'],
-          impact: { potato: 'HIGH', lowend: 'MEDIUM', budget: 'LOW' },
-          priority: 1
-        },
-        {
-          id: 'browser_limit',
-          title: 'Close Browser While Gaming',
-          description: 'Browsers are RAM hogs (Chrome uses 1-2GB easily)',
-          steps: ['Close browser COMPLETELY (not just minimize)', 'Use lightweight browser: Firefox, Opera GX (has RAM limiter)', 'Or Edge with efficiency mode enabled', 'If must keep open: limit to 1-2 tabs MAX'],
-          impact: { potato: 'EXTREME', lowend: 'HIGH', budget: 'MEDIUM' },
-          priority: 1
-        },
-        {
-          id: 'readyboost',
-          title: 'ReadyBoost (USB as Cache)',
-          description: 'Use USB drive as extra cache/RAM (only for HDD systems)',
-          steps: ['Plug in USB drive (4GB+ recommended)', 'Right-click USB > Properties > ReadyBoost tab', 'Select "Dedicate this device to ReadyBoost"', 'Note: Only helps with HDD, useless with SSD'],
-          impact: { potato: 'MEDIUM', lowend: 'LOW', budget: 'NONE' },
-          priority: 3
-        }
-      ]
-    },
-    storage: {
-      title: 'Storage Optimization',
-      icon: HardDrive,
-      color: 'yellow',
-      tweaks: [
-        {
-          id: 'disable_index',
-          title: 'Disable Disk Indexing',
-          description: 'Indexing kills HDD performance (can keep on SSD)',
-          steps: ['This PC > Right-click C: drive > Properties', 'Uncheck "Allow files on this drive to be indexed"', 'Apply to all folders (takes a while)', 'If SSD: You can leave this ON'],
-          impact: { potato: 'MASSIVE', lowend: 'HIGH', budget: 'LOW' },
-          priority: 1
-        },
-        {
-          id: 'defrag',
-          title: 'Defragment HDD (NOT SSD!)',
-          description: 'Fragmented HDDs are extremely slow',
-          steps: ['Search "Defragment and Optimize Drives"', 'Select C: drive > Analyze', 'If >10% fragmented: Optimize', 'WARNING: NEVER defrag SSD (damages it)', 'Can take 1-3 hours for HDD'],
-          impact: { potato: 'HIGH', lowend: 'MEDIUM', budget: 'NONE' },
-          priority: 2
-        },
-        {
-          id: 'temp_clean',
-          title: 'Clean Temp Files & Disk Cleanup',
-          description: 'Free space and reduce clutter',
-          steps: ['Run Disk Cleanup: cleanmgr.exe', 'Check ALL boxes (Temp files, Downloads, Recycle Bin)', 'Delete: Win + R > %temp% > Ctrl+A > Delete', 'CCleaner (free) also works great', 'Repeat monthly'],
-          impact: { potato: 'MEDIUM', lowend: 'MEDIUM', budget: 'LOW' },
-          priority: 2
-        },
-        {
-          id: 'hibernate_off',
-          title: 'Disable Hibernation',
-          description: 'Frees up several GB of disk space',
-          steps: ['CMD as Admin', 'Run: powercfg -h off', 'This deletes hiberfil.sys (4-16GB file)', 'Sleep mode still works'],
-          impact: { potato: 'HIGH', lowend: 'MEDIUM', budget: 'LOW' },
-          priority: 2
-        },
-        {
-          id: 'move_games',
-          title: 'Install Games on Fastest Drive',
-          description: 'If you have both HDD and SSD, use SSD for games',
-          steps: ['Steam: Settings > Downloads > Steam Library Folders', 'Add folder on SSD, move games there', 'Same for Epic, GOG, etc.', 'Keep OS on SSD, media on HDD'],
-          impact: { potato: 'MASSIVE', lowend: 'HIGH', budget: 'MEDIUM' },
-          priority: 1
-        }
-      ]
-    },
-    ingame: {
-      title: 'In-Game Settings',
-      icon: Monitor,
-      color: 'green',
-      tweaks: [
-        {
-          id: 'resolution_low',
-          title: 'Lower Resolution',
-          description: 'Single biggest FPS boost you can get',
-          steps: ['Potato: 720p (1280x720) or even 900x600', 'Low-End: 900p (1600x900) or 720p', 'Budget: 1080p or 900p', 'Try windowed mode if fullscreen stutters'],
-          impact: { potato: 'INSANE', lowend: 'HUGE', budget: 'HIGH' },
-          priority: 1
-        },
-        {
-          id: 'settings_low',
-          title: 'ALL Settings to Low/Off',
-          description: 'Every setting matters on weak hardware',
-          steps: ['Shadows: OFF or VERY LOW (biggest FPS killer)', 'Textures: LOW (saves VRAM)', 'Anti-aliasing: OFF', 'Effects, Post-processing, Motion blur: OFF', 'View Distance: LOW', 'V-Sync: OFF (adds input lag)'],
-          impact: { potato: 'MASSIVE', lowend: 'HUGE', budget: 'HIGH' },
-          priority: 1
-        },
-        {
-          id: 'render_scale',
-          title: 'Lower Render Resolution/Scale',
-          description: 'Makes game blurry but massive FPS gain',
-          steps: ['Find "Render Scale" or "Resolution Scale" in settings', 'Potato: 50-65%', 'Low-End: 70-85%', 'Budget: 85-100%', 'Looks bad but runs much better'],
-          impact: { potato: 'EXTREME', lowend: 'HUGE', budget: 'MEDIUM' },
-          priority: 1
-        },
-        {
-          id: 'fps_cap',
-          title: 'Cap FPS (30 or 60)',
-          description: 'Stable framerate = smoother gameplay + less heat',
-          steps: ['Potato: Cap at 30 FPS', 'Low-End: Cap at 30-45 FPS', 'Budget: Cap at 60 FPS', 'Use in-game limiter or RivaTuner', 'Stable 30 > unstable 50'],
-          impact: { potato: 'HIGH', lowend: 'MEDIUM', budget: 'LOW' },
-          priority: 2
-        },
-        {
-          id: 'fullscreen',
-          title: 'Use Fullscreen (not Borderless)',
-          description: 'Fullscreen gives better performance',
-          steps: ['Set game to "Fullscreen" mode (not Windowed or Borderless)', 'Gives 5-15% more FPS', 'Borderless uses more resources', 'If fullscreen crashes: try Windowed mode instead'],
-          impact: { potato: 'MEDIUM', lowend: 'MEDIUM', budget: 'LOW' },
-          priority: 2
-        }
-      ]
-    },
-    nuclear: {
-      title: 'Nuclear Options',
-      icon: XCircle,
-      color: 'purple',
-      tweaks: [
-        {
-          id: 'game_mode',
-          title: 'Enable Windows Game Mode',
-          description: 'Prioritizes game performance (mixed results)',
-          steps: ['Settings > Gaming > Game Mode > ON', 'Game Bar: can turn OFF (causes issues)', 'Captures: Turn OFF background recording', 'Xbox DVR: Disable completely'],
-          impact: { potato: 'LOW', lowend: 'MEDIUM', budget: 'MEDIUM' },
-          priority: 2
-        },
-        {
-          id: 'cortana_kill',
-          title: 'Remove Cortana',
-          description: 'Cortana wastes RAM and CPU',
-          steps: ['PowerShell as Admin', 'Run: Get-AppxPackage *cortana* | Remove-AppxPackage', 'Or use "O&O ShutUp10" tool', 'Restart PC'],
-          impact: { potato: 'MEDIUM', lowend: 'LOW', budget: 'NONE' },
-          priority: 3
-        },
-        {
-          id: 'defender_off',
-          title: 'Disable Windows Defender (RISKY)',
-          description: 'Defender scans can cause stuttering',
-          steps: ['Virus & Threat Protection > Manage Settings > Real-time OFF', 'Add game folder to exclusions (safer)', 'WARNING: Only if you know what you\'re doing', 'Have another antivirus or be VERY careful'],
-          impact: { potato: 'HIGH', lowend: 'MEDIUM', budget: 'LOW' },
-          priority: 3
-        },
-        {
-          id: 'debloat',
-          title: 'Debloat Windows 10',
-          description: 'Remove Microsoft bloatware apps',
-          steps: ['Download "Windows10Debloater" from GitHub', 'Run PowerShell script as Admin', 'Removes: Candy Crush, Xbox bloat, 3D apps, tips, etc.', 'Or manually uninstall from Apps & Features'],
-          impact: { potato: 'MEDIUM', lowend: 'MEDIUM', budget: 'LOW' },
-          priority: 3
-        },
-        {
-          id: 'timer_resolution',
-          title: 'Timer Resolution Tool',
-          description: 'Reduces input lag and micro-stuttering',
-          steps: ['Download "Timer Resolution" tool', 'Set to 0.5ms', 'Run before gaming', 'Small FPS gain but smoother feeling'],
-          impact: { potato: 'LOW', lowend: 'LOW', budget: 'LOW' },
-          priority: 3
-        },
-        {
-          id: 'priority_high',
-          title: 'Set Game to High Priority',
-          description: 'CPU prioritizes game over other processes',
-          steps: ['Open game first', 'Task Manager > Details tab', 'Find game.exe > Right-click > Set Priority > High', 'Note: Resets on game restart', 'Can cause other apps to lag'],
-          impact: { potato: 'MEDIUM', lowend: 'LOW', budget: 'LOW' },
-          priority: 2
-        }
-      ]
-    }
-  };
-
-  const getImpactForSpec = (tweak) => {
-    return tweak.impact[selectedSpec] || 'LOW';
-  };
-
-  const getImpactColor = (impact) => {
-    const colors = {
-      'CRITICAL': 'bg-red-600 text-white',
-      'INSANE': 'bg-red-600 text-white',
-      'EXTREME': 'bg-red-500 text-white',
-      'MASSIVE': 'bg-orange-600 text-white',
-      'HUGE': 'bg-orange-500 text-white',
-      'HIGH': 'bg-yellow-500 text-black',
-      'MEDIUM': 'bg-blue-500 text-white',
-      'LOW': 'bg-gray-600 text-white',
-      'NONE': 'bg-gray-800 text-gray-400'
-    };
-    return colors[impact] || colors.LOW;
-  };
-
-  const CategoryIcon = tweakCategories[activeTab].icon;
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white p-4 md:p-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-6">
-          <h1 className="text-3xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
-            Low-End PC Gaming Tweaks
-          </h1>
-          <p className="text-gray-400 text-sm md:text-base">Optimize any potato laptop/PC for gaming</p>
+    </style>
+</head>
+<body class="text-white">
+    <div class="max-w-6xl mx-auto p-4 md:p-6">
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <h1 class="text-3xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
+                Low-End PC Gaming Tweaks
+            </h1>
+            <p class="text-gray-400 text-sm md:text-base">Optimize any potato laptop/PC for gaming</p>
         </div>
 
-        <div className="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border-2 border-purple-500/50 rounded-lg p-4 mb-6">
-          <h3 className="font-bold mb-3 text-center text-lg">Select Your Spec Tier:</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {Object.entries(specProfiles).map(([key, spec]) => (
-              <button
-                key={key}
-                onClick={() => setSelectedSpec(key)}
-                className={`p-4 rounded-lg border-2 transition-all text-left ${
-                  selectedSpec === key
-                    ? 'bg-gradient-to-br from-purple-600 to-blue-600 border-white scale-105'
-                    : 'bg-gray-800/50 border-gray-700 hover:border-gray-600'
-                }`}
-              >
-                <div className="font-bold text-lg mb-1">{spec.name}</div>
-                <div className="text-xs text-gray-300 mb-2">{spec.desc}</div>
-                <div className="text-xs text-gray-400 italic">{spec.examples}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-red-950/50 border-2 border-red-500 rounded-lg p-4 mb-6">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="flex-shrink-0 text-red-500" size={24} />
-            <div className="text-sm">
-              <strong className="text-red-400">WARNING:</strong> Create a system restore point first! Close all programs before tweaking. Some changes need admin rights. Your laptop will get hot - keep it ventilated!
+        <!-- Spec Selector -->
+        <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border-2 border-purple-500/50 rounded-lg p-4 mb-6">
+            <h3 class="font-bold mb-3 text-center text-lg">Select Your Spec Tier:</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <button onclick="selectSpec('potato')" id="spec-potato" class="spec-btn p-4 rounded-lg border-2 transition-all text-left bg-gradient-to-br from-purple-600 to-blue-600 border-white">
+                    <div class="font-bold text-lg mb-1">🥔 Potato Tier</div>
+                    <div class="text-xs text-gray-300 mb-2">2-4GB RAM, Old Dual-Core, HDD, Intel HD/Old iGPU</div>
+                    <div class="text-xs text-gray-400 italic">Pentium, Celeron, old i3, 2GB-4GB RAM</div>
+                </button>
+                <button onclick="selectSpec('lowend')" id="spec-lowend" class="spec-btn p-4 rounded-lg border-2 transition-all text-left bg-gray-800/50 border-gray-700">
+                    <div class="font-bold text-lg mb-1">🔥 Low-End</div>
+                    <div class="text-xs text-gray-300 mb-2">4-8GB RAM, Quad-Core, HDD/SSD, Basic GPU</div>
+                    <div class="text-xs text-gray-400 italic">i3 8th-10th gen, Ryzen 3, MX150/MX250, 4-8GB RAM</div>
+                </button>
+                <button onclick="selectSpec('budget')" id="spec-budget" class="spec-btn p-4 rounded-lg border-2 transition-all text-left bg-gray-800/50 border-gray-700">
+                    <div class="font-bold text-lg mb-1">⚡ Budget Gaming</div>
+                    <div class="text-xs text-gray-300 mb-2">8GB RAM, Modern CPU, SSD, Entry GPU</div>
+                    <div class="text-xs text-gray-400 italic">i5 10th gen+, Ryzen 5, GTX 1650/RX 5500, 8GB RAM</div>
+                </button>
             </div>
-          </div>
         </div>
 
-        <div className="grid grid-cols-2 md:flex md:flex-wrap gap-2 mb-6">
-          {Object.entries(tweakCategories).map(([key, category]) => {
-            const Icon = category.icon;
-            return (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
-                className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg font-semibold transition-all text-sm ${
-                  activeTab === key
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 border-2 border-white text-white scale-105'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700 border-2 border-gray-700'
-                }`}
-              >
-                <Icon size={16} />
-                <span className="hidden md:inline">{category.title}</span>
-                <span className="md:hidden">{category.title.split(' ')[0]}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="bg-gray-900/70 backdrop-blur rounded-lg p-4 md:p-6 border-2 border-gray-700">
-          <div className="flex items-center gap-3 mb-6">
-            <CategoryIcon size={28} className="text-purple-400" />
-            <h2 className="text-xl md:text-2xl font-bold">{tweakCategories[activeTab].title}</h2>
-          </div>
-
-          <div className="space-y-4">
-            {tweakCategories[activeTab].tweaks.map(tweak => {
-              const impact = getImpactForSpec(tweak);
-              return (
-                <div
-                  key={tweak.id}
-                  className={`bg-gray-950/80 rounded-lg p-4 border-2 transition-all ${
-                    appliedTweaks[tweak.id]
-                      ? 'border-green-500 bg-green-950/20'
-                      : 'border-gray-800 hover:border-gray-700'
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg mb-1">{tweak.title}</h3>
-                      <p className="text-gray-400 text-sm mb-2">{tweak.description}</p>
-                      <div className={`rounded px-3 py-1 inline-block font-bold text-xs ${getImpactColor(impact)}`}>
-                        IMPACT FOR YOUR SPEC: {impact}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => toggleTweak(tweak.id)}
-                      className={`flex-shrink-0 p-2 rounded-lg transition-all ${
-                        appliedTweaks[tweak.id]
-                          ? 'bg-green-600 hover:bg-green-700'
-                          : 'bg-gray-700 hover:bg-gray-600'
-                      }`}
-                    >
-                      <CheckCircle size={20} />
-                    </button>
-                  </div>
-                  
-                  <div className="bg-black/50 rounded-lg p-3 border border-gray-800">
-                    <div className="font-semibold text-sm text-gray-300 mb-2">Steps:</div>
-                    <ol className="list-decimal list-inside space-y-1 text-sm text-gray-400">
-                      {tweak.steps.map((step, idx) => (
-                        <li key={idx} className="leading-relaxed">{step}</li>
-                      ))}
-                    </ol>
-                  </div>
+        <!-- Warning -->
+        <div class="bg-red-950/50 border-2 border-red-500 rounded-lg p-4 mb-6">
+            <div class="flex items-start gap-3">
+                <svg class="flex-shrink-0 text-red-500 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <div class="text-sm">
+                    <strong class="text-red-400">WARNING:</strong> Create a system restore point first! Close all programs before tweaking. Some changes need admin rights. Your laptop will get hot - keep it ventilated!
                 </div>
-              );
-            })}
-          </div>
+            </div>
         </div>
 
-        <div className="mt-6 grid md:grid-cols-3 gap-4">
-          <div className="bg-blue-950/50 border-2 border-blue-500 rounded-lg p-4">
-            <h3 className="font-bold mb-2 text-blue-400">💡 Pro Tips</h3>
-            <ul className="text-sm text-gray-300 space-y-1">
-              <li>• Benchmark before/after tweaks</li>
-              <li>• Keep laptop elevated for airflow</li>
-              <li>• Clean dust from vents monthly</li>
-              <li>• Update GPU drivers regularly</li>
-              <li>• Use Ethernet over WiFi</li>
-            </ul>
-          </div>
-          
-          <div className="bg-green-950/50 border-2 border-green-500 rounded-lg p-4">
-            <h3 className="font-bold mb-2 text-green-400">🎮 Best Games</h3>
-            <ul className="text-sm text-gray-300 space-y-1">
+        <!-- Category Tabs -->
+        <div class="grid grid-cols-2 md:flex md:flex-wrap gap-2 mb-6" id="category-tabs">
+            <button onclick="showCategory('essential')" class="category-btn active flex items-center justify-center gap-2 px-3 py-2 rounded-lg font-semibold transition-all text-sm bg-gradient-to-r from-purple-600 to-blue-600 border-2 border-white">
+                <span>⚡</span>
+                <span class="hidden md:inline">Essential (Start Here)</span>
+                <span class="md:hidden">Essential</span>
+            </button>
+            <button onclick="showCategory('ram')" class="category-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg font-semibold transition-all text-sm bg-gray-800 text-gray-400 border-2 border-gray-700">
+                <span>🧠</span>
+                <span class="hidden md:inline">RAM Optimization</span>
+                <span class="md:hidden">RAM</span>
+            </button>
+            <button onclick="showCategory('storage')" class="category-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg font-semibold transition-all text-sm bg-gray-800 text-gray-400 border-2 border-gray-700">
+                <span>💾</span>
+                <span class="hidden md:inline">Storage Optimization</span>
+                <span class="md:hidden">Storage</span>
+            </button>
+            <button onclick="showCategory('ingame')" class="category-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg font-semibold transition-all text-sm bg-gray-800 text-gray-400 border-2 border-gray-700">
+                <span>🎮</span>
+                <span class="hidden md:inline">In-Game Settings</span>
+                <span class="md:hidden">In-Game</span>
+            </button>
+            <button onclick="showCategory('nuclear')" class="category-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg font-semibold transition-all text-sm bg-gray-800 text-gray-400 border-2 border-gray-700">
+                <span>☢️</span>
+                <span class="hidden md:inline">Nuclear Options</span>
+                <span class="md:hidden">Nuclear</span>
+            </button>
+        </div>
 
+        <!-- Content Area -->
+        <div id="content-area" class="bg-gray-900/70 backdrop-blur rounded-lg p-4 md:p-6 border-2 border-gray-700">
+            <!-- Content will be inserted here by JavaScript -->
+        </div>
+
+        <!-- Tips Section -->
+        <div class="mt-6 grid md:grid-cols-3 gap-4">
+            <div class="bg-blue-950/50 border-2 border-blue-500 rounded-lg p-4">
+                <h3 class="font-bold mb-2 text-blue-400">💡 Pro Tips</h3>
+                <ul class="text-sm text-gray-300 space-y-1">
+                    <li>• Benchmark before/after tweaks</li>
+                    <li>• Keep laptop elevated for airflow</li>
+                    <li>• Clean dust from vents monthly</li>
+                    <li>• Update GPU drivers regularly</li>
+                    <li>• Use Ethernet over WiFi</li>
+                </ul>
+            </div>
+            
+            <div class="bg-green-950/50 border-2 border-green-500 rounded-lg p-4">
+                <h3 class="font-bold mb-2 text-green-400">🎮 Best Games</h3>
+                <ul class="text-sm text-gray-300 space-y-1">
+                    <li>• CS:GO, Valorant</li>
+                    <li>• Minecraft (Optifine)</li>
+                    <li>• League, Dota 2</li>
+                    <li>• Stardew Valley, Terraria</li>
+                    <li>• Older GTA, COD games</li>
+                </ul>
+            </div>
+
+            <div class="bg-purple-950/50 border-2 border-purple-500 rounded-lg p-4">
+                <h3 class="font-bold mb-2 text-purple-400">⚠️ Avoid These</h3>
+                <ul class="text-sm text-gray-300 space-y-1">
+                    <li>• Chrome while gaming</li>
+                    <li>• Auto-updates during play</li>
+                    <li>• Recording/streaming</li>
+                    <li>• High graphics settings</li>
+                    <li>• AAA games (2020+)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Reality Check -->
+        <div class="mt-4 bg-gradient-to-r from-red-900/30 to-orange-900/30 border-2 border-orange-500 rounded-lg p-4 text-center">
+            <p class="text-sm text-gray-300">
+                <strong class="text-orange-400">Reality Check:</strong> Low-end hardware has limits. These tweaks help, but won't turn a potato into a gaming beast. Expect 30-60 FPS on low settings in most games. Some AAA titles won't run at all.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let currentSpec = 'potato';
+        const appliedTweaks = {};
+
+        const tweakData = {
+            essential: {
+                title: 'Essential (Start Here)',
+                tweaks: [
+                    {
+                        id: 'close_everything',
+                        title: 'Close ALL Background Apps',
+                        description: 'Every running app steals RAM and CPU cycles',
+                        steps: ['Open Task Manager (Ctrl+Shift+Esc)', 'Go to Processes tab', 'End ALL unnecessary processes (Chrome, Discord, Spotify, etc)', 'Keep only Windows Explorer and your game'],
+                        impact: { potato: 'CRITICAL', lowend: 'HIGH', budget: 'MEDIUM' }
+                    },
+                    {
+                        id: 'performance_mode',
+                        title: 'High/Ultimate Performance Power Plan',
+                        description: 'Prevents CPU from throttling down to save power',
+                        steps: ['Control Panel > Power Options', 'Select "High Performance"', 'For Ultimate: CMD as Admin > powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61', 'Then select "Ultimate Performance" in Power Options'],
+                        impact: { potato: 'HUGE', lowend: 'HIGH', budget: 'MEDIUM' }
+                    },
+                    {
+                        id: 'page_file',
+                        title: 'Configure Virtual Memory/Page File',
+                        description: 'Uses storage as extra RAM when physical RAM fills up',
+                        steps: ['System Properties > Advanced > Performance Settings > Advanced', 'Virtual Memory > Change', 'Uncheck "Automatically manage"', 'Custom size: Initial = 1.5x your RAM, Max = 3x your RAM', '(2GB RAM = 3000-6000MB, 4GB = 6000-12000MB, 8GB = 12000-24000MB)'],
+                        impact: { potato: 'CRITICAL', lowend: 'HIGH', budget: 'LOW' }
+                    },
+                    {
+                        id: 'disable_updates',
+                        title: 'Pause/Control Windows Updates',
+                        description: 'Updates cause random lag spikes and disk usage',
+                        steps: ['Settings > Update & Security > Pause updates for 35 days', 'Or Services.msc > Windows Update > Disable', 'Or use "O&O ShutUp10" to control updates'],
+                        impact: { potato: 'HUGE', lowend: 'HIGH', budget: 'MEDIUM' }
+                    }
+                ]
+            },
+            ram: {
+                title: 'RAM Optimization',
+                tweaks: [
+                    {
+                        id: 'disable_startup',
+                        title: 'Disable Startup Programs',
+                        description: 'Programs at startup eat RAM before you even start gaming',
+                        steps: ['Task Manager > Startup tab', 'Right-click and Disable ALL non-essential programs', 'Disable: Steam (launch manually), Discord, Spotify, Adobe, Microsoft apps', 'Keep only: Antivirus and GPU drivers'],
+                        impact: { potato: 'HUGE', lowend: 'HIGH', budget: 'MEDIUM' }
+                    },
+                    {
+                        id: 'services_disable',
+                        title: 'Disable Unnecessary Services',
+                        description: 'Background services waste RAM and CPU',
+                        steps: ['Win + R > services.msc', 'Set to Disabled: Windows Search, Superfetch/SysMain, Print Spooler (if no printer)', 'Also disable: Connected User Experiences, Diagnostic services, Xbox services'],
+                        impact: { potato: 'HIGH', lowend: 'MEDIUM', budget: 'LOW' }
+                    },
+                    {
+                        id: 'visual_off',
+                        title: 'Disable Visual Effects',
+                        description: 'Animations and transparency use RAM and CPU',
+                        steps: ['System Properties > Advanced > Performance Settings', 'Select "Adjust for best performance"', 'OR keep only: Show thumbnails, Smooth edges of screen fonts', 'Apply and OK'],
+                        impact: { potato: 'HIGH', lowend: 'MEDIUM', budget: 'LOW' }
+                    },
+                    {
+                        id: 'browser_limit',
+                        title: 'Close Browser While Gaming',
+                        description: 'Browsers are RAM hogs (Chrome uses 1-2GB easily)',
+                        steps: ['Close browser COMPLETELY (not just minimize)', 'Use lightweight browser: Firefox, Opera GX (has RAM limiter)', 'Or Edge with efficiency mode enabled', 'If must keep open: limit to 1-2 tabs MAX'],
+                        impact: { potato: 'EXTREME', lowend: 'HIGH', budget: 'MEDIUM' }
+                    },
+                    {
+                        id: 'readyboost',
+                        title: 'ReadyBoost (USB as Cache)',
+                        description: 'Use USB drive as extra cache/RAM (only for HDD systems)',
+                        steps: ['Plug in USB drive (4GB+ recommended)', 'Right-click USB > Properties > ReadyBoost tab', 'Select "Dedicate this device to ReadyBoost"', 'Note: Only helps with HDD, useless with SSD'],
+                        impact: { potato: 'MEDIUM', lowend: 'LOW', budget: 'NONE' }
+                    }
+                ]
+            },
+            storage: {
+                title: 'Storage Optimization',
+                tweaks: [
+                    {
+                        id: 'disable_index',
+                        title: 'Disable Disk Indexing',
+                        description: 'Indexing kills HDD performance (can keep on SSD)',
+                        steps: ['This PC > Right-click C: drive > Properties', 'Uncheck "Allow files on this drive to be indexed"', 'Apply to all folders (takes a while)', 'If SSD: You can leave this ON'],
+                        impact: { potato: 'MASSIVE', lowend: 'HIGH', budget: 'LOW' }
+                    },
+                    {
+                        id: 'defrag',
+                        title: 'Defragment HDD (NOT SSD!)',
+                        description: 'Fragmented HDDs are extremely slow',
+                        steps: ['Search "Defragment and Optimize Drives"', 'Select C: drive > Analyze', 'If >10% fragmented: Optimize', 'WARNING: NEVER defrag SSD (damages it)', 'Can take 1-3 hours for HDD'],
+                        impact: { potato: 'HIGH', lowend: 'MEDIUM', budget: 'NONE' }
+                    },
+                    {
+                        id: 'temp_clean',
+                        title: 'Clean Temp Files & Disk Cleanup',
+                        description: 'Free space and reduce clutter',
+                        steps: ['Run Disk Cleanup: cleanmgr.exe', 'Check ALL boxes (Temp files, Downloads, Recycle Bin)', 'Delete: Win + R > %temp% > Ctrl+A > Delete', 'CCleaner (free) also works great', 'Repeat monthly'],
+                        impact: { potato: 'MEDIUM', lowend: 'MEDIUM', budget: 'LOW' }
+                    },
+                    {
+                        id: 'hibernate_off',
+                        title: 'Disable Hibernation',
+                        description: 'Frees up several GB of disk space',
+                        steps: ['CMD as Admin', 'Run: powercfg -h off', 'This deletes hiberfil.sys (4-16GB file)', 'Sleep mode still works'],
+                        impact: { potato: 'HIGH', lowend: 'MEDIUM', budget: 'LOW' }
+                    },
+                    {
+                        id: 'move_games',
+                        title: 'Install Games on Fastest Drive',
+                        description: 'If you have both HDD and SSD, use SSD for games',
+                        steps: ['Steam: Settings > Downloads > Steam Library Folders', 'Add folder on SSD, move games there', 'Same for Epic, GOG, etc.', 'Keep OS on SSD, media on HDD'],
+                        impact: { potato: 'MASSIVE', lowend: 'HIGH', budget: 'MEDIUM' }
+                    }
+                ]
+            },
+            ingame: {
+                title: 'In-Game Settings',
+                tweaks: [
+                    {
+                        id: 'resolution_low',
+                        title: 'Lower Resolution',
+                        description: 'Single biggest FPS boost you can get',
+                        steps: ['Potato: 720p (1280x720) or even 900x600', 'Low-End: 900p (1600x900) or 720p', 'Budget: 1080p or 900p', 'Try windowed mode if fullscreen stutters'],
+                        impact: { potato: 'INSANE', lowend: 'HUGE', budget: 'HIGH' }
+                    },
+                    {
+                        id: 'settings_low',
+                        title: 'ALL Settings to Low/Off',
+                        description: 'Every setting matters on weak hardware',
+                        steps: ['Shadows: OFF or VERY LOW (biggest FPS killer)', 'Textures: LOW (saves VRAM)', 'Anti-aliasing: OFF', 'Effects, Post-processing, Motion blur: OFF', 'View Distance: LOW', 'V-Sync: OFF (adds input lag)'],
+                        impact: { potato: 'MASSIVE', lowend: 'HUGE', budget: 'HIGH' }
+                    },
+                    {
+                        id: 'render_scale',
+                        title: 'Lower Render Resolution/Scale',
+                        description: 'Makes game blurry but massive FPS gain',
+                        steps: ['Find "Render Scale" or "Resolution Scale" in settings', 'Potato: 50-65%', 'Low-End: 70-85%', 'Budget: 85-100%', 'Looks bad but runs much better'],
+                        impact: { potato: 'EXTREME', lowend: 'HUGE', budget: 'MEDIUM' }
+                    },
+                    {
+                        id: 'fps_cap',
+                        title: 'Cap FPS (30 or 60)',
+                        description: 'Stable framerate = smoother gameplay + less heat',
+                        steps: ['Potato: Cap at 30 FPS', 'Low-End: Cap at 30-45 FPS', 'Budget: Cap at 60 FPS', 'Use in-game limiter or RivaTuner', 'Stable 30 > unstable 50'],
+                        impact: { potato: 'HIGH', lowend: 'MEDIUM', budget: 'LOW' }
+                    },
+                    {
+                        id: 'fullscreen',
+                        title: 'Use Fullscreen (not Borderless)',
+                        description: 'Fullscreen gives better performance',
+                        steps: ['Set game to "Fullscreen" mode (not Windowed or Borderless)', 'Gives 5-15% more FPS', 'Borderless uses more resources', 'If fullscreen crashes: try Windowed mode instead'],
+                        impact: { potato: 'MEDIUM', lowend: 'MEDIUM', budget: 'LOW' }
+                    }
+                ]
+            },
+            nuclear: {
+                title: 'Nuclear Options',
+                tweaks: [
+                    {
+                        id: 'game_mode',
+                        title: 'Enable Windows Game Mode',
+                        description: 'Prioritizes game performance (mixed results)',
+                        steps: ['Settings > Gaming > Game Mode > ON', 'Game Bar: can turn OFF (causes issues)', 'Captures: Turn OFF background recording', 'Xbox DVR: Disable completely'],
+                        impact: { potato: 'LOW', lowend: 'MEDIUM', budget: 'MEDIUM' }
+                    },
+                    {
+                        id: 'cortana_kill',
+                        title: 'Remove Cortana',
+                        description: 'Cortana wastes RAM and CPU',
+                        steps: ['PowerShell as Admin', 'Run: Get-AppxPackage *cortana* | Remove-AppxPackage', 'Or use "O&O ShutUp10" tool', 'Restart PC'],
+                        impact: { potato: 'MEDIUM', lowend: 'LOW', budget: 'NONE' }
+                    },
+                    {
+                        id: 'defender_off',
+                        title: 'Disable Windows Defend
